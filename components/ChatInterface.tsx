@@ -19,7 +19,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onLogout }) => {
             <div className="p-1.5 rounded bg-cinema-accent text-white transform -rotate-6">
                 <Clapperboard className="w-5 h-5" />
             </div>
-            <h1 className="text-xl font-hand text-white pt-1 tracking-wide">
+            <h1 className="text-xl font-movie font-bold text-white pt-1 tracking-wide">
                 珮伊の专属 Gemini
             </h1>
         </div>
@@ -28,7 +28,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onLogout }) => {
         <div className="relative z-10 px-4 h-full flex items-center bg-cinema-black/80 backdrop-blur-sm">
             <button 
                 onClick={onLogout}
-                className="group flex items-center gap-2 px-3 py-1.5 rounded border border-white/20 hover:border-cinema-accent hover:bg-white/5 transition-all text-sm font-mono text-white/80 hover:text-white"
+                className="group flex items-center gap-2 px-3 py-1.5 rounded border border-white/20 hover:border-cinema-accent hover:bg-white/5 transition-all text-sm font-movie text-white/80 hover:text-white"
                 title="Cut / Logout"
             >
                 <span>CUT</span>
@@ -45,7 +45,6 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ onLogout }) => {
                 src="https://udify.app/chatbot/3GHTKiJAdShhHyUl"
                 style={{ width: '100%', height: '100%' }}
                 frameBorder="0"
-                // Removed 'microphone' from allow list as requested
                 allow="" 
                 title="Dify Chatbot"
                 className="absolute inset-0 w-full h-full"

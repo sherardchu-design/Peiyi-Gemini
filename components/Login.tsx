@@ -40,10 +40,10 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
             
             {/* Header Text */}
             <div className="text-center mb-8 border-b-2 border-white/20 pb-4">
-                <h1 className="text-4xl text-white font-hand tracking-wider mb-1">
+                <h1 className="text-4xl text-white font-movie font-bold tracking-wider mb-2">
                     珮伊の专属 Gemini
                 </h1>
-                <p className="text-cinema-accent font-mono text-sm uppercase tracking-[0.2em]">
+                <p className="text-cinema-accent font-movie text-sm uppercase tracking-[0.2em]">
                     Production No. 2026
                 </p>
             </div>
@@ -54,16 +54,16 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
                 <div className="grid grid-cols-2 gap-4">
                     {/* Date Field (Static) */}
                     <div className="relative">
-                        <label className="block text-xs text-white/60 uppercase mb-1 font-mono">Date</label>
-                        <div className="w-full bg-transparent border-b-2 border-white text-white font-hand text-xl py-1 text-center">
+                        <label className="block text-xs text-white/60 uppercase mb-1 font-movie">Date</label>
+                        <div className="w-full bg-transparent border-b-2 border-white text-white font-movie text-xl py-1 text-center">
                             {new Date().toLocaleDateString()}
                         </div>
                     </div>
                     
                     {/* Scene Field (Label) */}
                     <div className="relative">
-                        <label className="block text-xs text-white/60 uppercase mb-1 font-mono">Scene</label>
-                        <div className="w-full bg-transparent border-b-2 border-white text-white font-hand text-xl py-1 text-center">
+                        <label className="block text-xs text-white/60 uppercase mb-1 font-movie">Scene</label>
+                        <div className="w-full bg-transparent border-b-2 border-white text-white font-movie text-xl py-1 text-center">
                             LOGIN
                         </div>
                     </div>
@@ -71,7 +71,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
                 {/* Password Field as "Take" */}
                 <div className="relative mt-4">
-                    <label className="block text-xs text-cinema-accent uppercase mb-1 font-mono">
+                    <label className="block text-xs text-cinema-accent uppercase mb-1 font-movie">
                         Password (Take)
                     </label>
                     <input
@@ -81,14 +81,14 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
                             setInput(e.target.value);
                             setError(false);
                         }}
-                        className={`w-full bg-white/10 border-2 rounded p-3 text-center text-white placeholder-white/30 focus:outline-none focus:border-cinema-accent font-hand text-2xl tracking-widest transition-colors
+                        className={`w-full bg-white/10 border-2 rounded p-3 text-center text-white placeholder-white/30 focus:outline-none focus:border-cinema-accent font-movie text-2xl tracking-widest transition-colors
                             ${error ? 'border-red-500 animate-pulse' : 'border-white'}
                         `}
                         placeholder="ACTION..."
                         autoFocus
                     />
                     {error && (
-                        <p className="absolute -bottom-6 w-full text-center text-xs text-red-400 font-mono">
+                        <p className="absolute -bottom-6 w-full text-center text-xs text-red-400 font-movie">
                             CUT! Wrong password. Try again.
                         </p>
                     )}
@@ -97,7 +97,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
                 {/* Action Button */}
                 <button
                     type="submit"
-                    className="w-full mt-8 bg-cinema-accent hover:bg-pink-600 text-white font-bold py-3 px-4 rounded transform transition hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 uppercase tracking-widest"
+                    className="w-full mt-8 bg-cinema-accent hover:bg-pink-600 text-white font-bold py-3 px-4 rounded transform transition hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 uppercase tracking-widest font-movie"
                 >
                     <Play className="w-5 h-5 fill-current" />
                     Action
@@ -107,7 +107,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
             {/* Footer */}
             <div className="mt-6 text-center opacity-40">
                 <Clapperboard className="w-6 h-6 mx-auto mb-2" />
-                <span className="text-[10px] font-mono">DIRECTED BY PEIYI</span>
+                <span className="text-[10px] font-movie">DIRECTED BY PEIYI</span>
             </div>
         </div>
       </div>

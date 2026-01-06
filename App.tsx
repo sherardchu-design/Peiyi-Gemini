@@ -34,7 +34,7 @@ const App: React.FC = () => {
   };
 
   if (isLoading) {
-    return <div className="h-screen w-screen bg-cinema-black flex items-center justify-center text-cinema-accent animate-pulse font-hand text-2xl">
+    return <div className="h-screen w-screen bg-cinema-black flex items-center justify-center text-cinema-accent animate-pulse font-movie text-2xl">
       Loading...
     </div>;
   }
