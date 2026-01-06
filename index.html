@@ -6,18 +6,18 @@
     <title>珮伊の专属 Gemini</title>
     
     <!-- 1. Tailwind CSS (Styling) -->
+    <!-- Note: The warning about 'cdn.tailwindcss.com' in console is normal for this standalone version. -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              'maiden-pink': '#ffe4e6',    // Soft Pink
-              'maiden-dark-pink': '#fda4af', // Accent Pink
-              'maiden-blue': '#e0f2fe',    // Soft Blue
-              'maiden-text': '#885566',    // Brownish text
-              'maiden-white': '#fffbfc',   // Warm white
-              'glass': 'rgba(255, 255, 255, 0.7)',
+              'maiden-pink': '#ffe4e6',    
+              'maiden-dark-pink': '#fda4af', 
+              'maiden-blue': '#e0f2fe',    
+              'maiden-text': '#885566',    
+              'maiden-white': '#fffbfc',   
             },
             fontFamily: {
               sans: ['"Noto Sans SC"', 'Quicksand', 'ui-sans-serif', 'system-ui', 'sans-serif'], 
@@ -29,7 +29,6 @@
               'bounce-slow': 'bounce 3s infinite',
               'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
               'pulse-soft': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-              'spin-slow': 'spin 8s linear infinite',
             },
             keyframes: {
               float: {
@@ -56,12 +55,7 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
-    <!-- 4. Icons (Lucide) -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://unpkg.com/lucide-react/dist/lucide-react.min.js"></script>
-
     <style>
-      /* Custom Scrollbar for sweetness */
       ::-webkit-scrollbar { width: 8px; }
       ::-webkit-scrollbar-track { background: #fff0f5; }
       ::-webkit-scrollbar-thumb { background: #fda4af; border-radius: 4px; }
@@ -99,34 +93,16 @@
     <div id="root"></div>
 
     <script type="text/babel">
-      const { useState, useEffect, useRef } = React;
-      // Icons are available via the LucideReact global object if using UMD, 
-      // but simpler to use lucide-react via ESM import map or just simple SVGs for standalone stability.
-      // To ensure maximum stability without build tools, I will use inline SVGs for the icons in this standalone version
-      // or map them if available. Let's use clean SVG components for zero-dependency reliability.
+      const { useState, useEffect } = React;
 
-      // --- Icons Components (Zero Dependency) ---
-      const IconHeart = ({ className }) => (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-      );
-      const IconSparkles = ({ className }) => (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M3 9h4"/></svg>
-      );
-      const IconKey = ({ className }) => (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
-      );
-      const IconArrowRight = ({ className }) => (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-      );
-      const IconLogOut = ({ className }) => (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
-      );
-      const IconCloud = ({ className }) => (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M17.5 19c0-3.037-2.463-5.5-5.5-5.5S6.5 15.963 6.5 19"/><path d="M17.5 19c2.485 0 4.5-2.015 4.5-4.5S19.985 10 17.5 10c-.156 0-.308.008-.458.022C16.487 6.44 13.57 4 10 4 6.134 4 3 7.134 3 11c0 .17.007.338.02.5C1.292 12.188 0 13.917 0 16c0 2.761 2.239 5 5 5h12.5"/></svg>
-      );
-      const IconStars = ({ className }) => (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m12 3-1.9 5.8a2 2 0 0 1-1.2 1.3l-5.8 1.9 5.8 1.9a2 2 0 0 1 1.2 1.3l1.9 5.8 1.9-5.8a2 2 0 0 1 1.2-1.3l5.8-1.9-5.8-1.9a2 2 0 0 1-1.2-1.3Z"/></svg>
-      );
+      // --- SVG Icons (Inline for Stability) ---
+      const IconHeart = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>;
+      const IconSparkles = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M3 9h4"/></svg>;
+      const IconKey = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>;
+      const IconArrowRight = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>;
+      const IconLogOut = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>;
+      const IconCloud = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M17.5 19c0-3.037-2.463-5.5-5.5-5.5S6.5 15.963 6.5 19"/><path d="M17.5 19c2.485 0 4.5-2.015 4.5-4.5S19.985 10 17.5 10c-.156 0-.308.008-.458.022C16.487 6.44 13.57 4 10 4 6.134 4 3 7.134 3 11c0 .17.007.338.02.5C1.292 12.188 0 13.917 0 16c0 2.761 2.239 5 5 5h12.5"/></svg>;
+      const IconStars = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m12 3-1.9 5.8a2 2 0 0 1-1.2 1.3l-5.8 1.9 5.8 1.9a2 2 0 0 1 1.2 1.3l1.9 5.8 1.9-5.8a2 2 0 0 1 1.2-1.3l5.8-1.9-5.8-1.9a2 2 0 0 1-1.2-1.3Z"/></svg>;
 
       // --- Constants ---
       const PASSWORD_KEY = 'peiyi2026';
@@ -134,25 +110,14 @@
 
       // --- Components ---
 
-      // 1. Background Component
+      // 1. Background
       const BackgroundParticles = () => {
         return (
           <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 bg-gradient-to-br from-[#f0f9ff] via-[#fff1f2] to-[#fdf4ff]">
-            {/* Soft Orbs */}
             <div className="absolute top-[10%] left-[10%] w-64 h-64 bg-pink-200/30 rounded-full blur-3xl animate-float-delayed"></div>
             <div className="absolute bottom-[20%] right-[10%] w-80 h-80 bg-blue-200/30 rounded-full blur-3xl animate-float"></div>
             <div className="absolute top-[40%] left-[50%] w-72 h-72 bg-purple-200/20 rounded-full blur-3xl animate-pulse-soft"></div>
-
-            {/* Grid Overlay */}
-            <div 
-              className="absolute inset-0 opacity-[0.4]"
-              style={{
-                  backgroundImage: `radial-gradient(#fda4af 1px, transparent 1px)`,
-                  backgroundSize: '30px 30px'
-              }}
-            ></div>
-
-            {/* Decor Elements */}
+            <div className="absolute inset-0 opacity-[0.4]" style={{backgroundImage: `radial-gradient(#fda4af 1px, transparent 1px)`, backgroundSize: '30px 30px'}}></div>
             <div className="absolute top-[15%] left-[5%] opacity-40 text-white animate-float" style={{ animationDuration: '8s' }}>
                <IconCloud className="w-24 h-24 fill-white" />
             </div>
@@ -163,7 +128,7 @@
         );
       };
 
-      // 2. Login Component
+      // 2. Login
       const Login = ({ onLogin }) => {
         const [input, setInput] = useState('');
         const [error, setError] = useState(false);
@@ -185,14 +150,8 @@
         return (
           <div className="flex flex-col items-center justify-center h-full w-full px-4 font-sans relative z-20">
             <div className={`
-              relative w-full max-w-sm 
-              bg-white/70 backdrop-blur-md 
-              border-2 border-white 
-              rounded-[2.5rem] 
-              shadow-[0_20px_60px_-15px_rgba(255,182,193,0.5)] 
-              p-8 
-              animate-fade-in-up
-              transition-all duration-700 ease-in-out
+              relative w-full max-w-sm bg-white/70 backdrop-blur-md border-2 border-white rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(255,182,193,0.5)] p-8 
+              animate-fade-in-up transition-all duration-700 ease-in-out
               ${isUnlocking ? 'scale-110 opacity-0 translate-y-[-50px] rotate-3' : 'opacity-100'}
             `}>
               <div className="absolute -top-8 -left-8 text-maiden-blue animate-float">
@@ -208,12 +167,8 @@
                           <IconHeart className="w-8 h-8 animate-pulse-soft fill-current" />
                       </div>
                   </div>
-                  <h1 className="text-2xl font-bold text-maiden-text tracking-wider mb-2 font-cute">
-                      珮伊の专属 Gemini
-                  </h1>
-                  <p className="text-sm text-pink-300/80 font-medium tracking-widest uppercase">
-                      Magic Diary
-                  </p>
+                  <h1 className="text-2xl font-bold text-maiden-text tracking-wider mb-2 font-cute">珮伊の专属 Gemini</h1>
+                  <p className="text-sm text-pink-300/80 font-medium tracking-widest uppercase">Magic Diary</p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-5">
@@ -221,118 +176,52 @@
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
                           <IconKey className={`w-5 h-5 transition-colors duration-300 ${error ? 'text-red-400' : 'text-pink-300 group-focus-within:text-pink-500'}`} />
                       </div>
-                      <input
-                          type="password"
-                          value={input}
-                          onChange={(e) => {
-                              setInput(e.target.value);
-                              setError(false);
-                          }}
-                          className={`
-                              w-full bg-white/90 border-2 rounded-2xl py-3.5 pl-12 pr-4
-                              text-maiden-text placeholder-pink-200
-                              outline-none transition-all duration-300
-                              shadow-sm
-                              ${error 
-                                ? 'border-red-200 bg-red-50/50 shake-animation' 
-                                : 'border-pink-100 focus:border-pink-300 focus:ring-4 focus:ring-pink-100/50'}
-                          `}
-                          placeholder="请输入专属口令..."
-                          autoFocus
-                      />
+                      <input type="password" value={input} onChange={(e) => { setInput(e.target.value); setError(false); }}
+                          className={`w-full bg-white/90 border-2 rounded-2xl py-3.5 pl-12 pr-4 text-maiden-text placeholder-pink-200 outline-none transition-all duration-300 shadow-sm ${error ? 'border-red-200 bg-red-50/50 shake-animation' : 'border-pink-100 focus:border-pink-300 focus:ring-4 focus:ring-pink-100/50'}`}
+                          placeholder="请输入专属口令..." autoFocus />
                   </div>
-
-                  {error && (
-                      <div className="text-center text-xs text-red-400 font-bold animate-bounce">
-                          (qcq) 哎呀，口令不对哦~
-                      </div>
-                  )}
-
-                  <button
-                      type="submit"
-                      disabled={!input}
-                      className={`
-                          w-full mt-2
-                          bg-gradient-to-r from-pink-400 to-rose-400 
-                          text-white font-bold py-4 px-4 
-                          rounded-2xl 
-                          shadow-lg shadow-pink-200 
-                          transform transition-all duration-300 
-                          flex items-center justify-center gap-2
-                          border-b-4 border-pink-500/20 active:border-b-0 active:translate-y-1
-                          ${!input ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:-translate-y-1 hover:shadow-xl cursor-pointer'}
-                      `}
-                  >
-                      <span>开启旅程</span>
-                      <IconArrowRight className="w-5 h-5" />
+                  {error && <div className="text-center text-xs text-red-400 font-bold animate-bounce">(qcq) 哎呀，口令不对哦~</div>}
+                  <button type="submit" disabled={!input} className={`w-full mt-2 bg-gradient-to-r from-pink-400 to-rose-400 text-white font-bold py-4 px-4 rounded-2xl shadow-lg shadow-pink-200 transform transition-all duration-300 flex items-center justify-center gap-2 border-b-4 border-pink-500/20 active:border-b-0 active:translate-y-1 ${!input ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:-translate-y-1 hover:shadow-xl cursor-pointer'}`}>
+                      <span>开启旅程</span><IconArrowRight className="w-5 h-5" />
                   </button>
               </form>
-              <div className="mt-8 text-center">
-                  <p className="text-[10px] text-pink-200">Design for Peiyi · 2026</p>
-              </div>
+              <div className="mt-8 text-center"><p className="text-[10px] text-pink-200">Design for Peiyi · 2026</p></div>
             </div>
           </div>
         );
       };
 
-      // 3. Chat Interface Component
+      // 3. Chat Interface
       const ChatInterface = ({ onLogout }) => {
         return (
           <div className="flex flex-col h-full w-full bg-transparent relative z-20">
             <header className="flex-none h-16 bg-white/60 backdrop-blur-md border-b border-white/50 flex items-center justify-between px-4 z-30 shadow-sm">
               <div className="flex items-center gap-3">
-                  <div className="bg-pink-100 p-2 rounded-xl text-pink-500">
-                      <IconStars className="w-5 h-5 fill-current" />
-                  </div>
-                  <h1 className="text-lg font-cute font-bold text-maiden-text tracking-wide">
-                      珮伊の专属 Gemini
-                  </h1>
+                  <div className="bg-pink-100 p-2 rounded-xl text-pink-500"><IconStars className="w-5 h-5 fill-current" /></div>
+                  <h1 className="text-lg font-cute font-bold text-maiden-text tracking-wide">珮伊の专属 Gemini</h1>
               </div>
-
-              <button 
-                  onClick={onLogout}
-                  className="
-                      group flex items-center gap-2 px-4 py-1.5 
-                      rounded-full bg-white border border-pink-100 
-                      shadow-sm hover:shadow-md hover:bg-pink-50
-                      transition-all duration-300
-                      text-sm font-medium text-pink-400 hover:text-pink-500
-                  "
-              >
-                  <span className="hidden sm:inline">悄悄离开</span>
-                  <IconLogOut className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              <button onClick={onLogout} className="group flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-pink-100 shadow-sm hover:shadow-md hover:bg-pink-50 transition-all duration-300 text-sm font-medium text-pink-400 hover:text-pink-500">
+                  <span className="hidden sm:inline">悄悄离开</span><IconLogOut className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </button>
             </header>
-
             <main className="flex-1 relative overflow-hidden w-full flex flex-col p-2 sm:p-4">
               <div className="flex-1 w-full h-full relative bg-white/40 backdrop-blur-sm rounded-3xl border-2 border-white shadow-xl overflow-hidden">
-                  <div className="absolute top-[-20px] left-[20px] text-white opacity-40 z-0 pointer-events-none">
-                      <IconCloud className="w-32 h-32 fill-current" />
-                  </div>
-                  <iframe
-                      src="https://udify.app/chatbot/3GHTKiJAdShhHyUl"
-                      style={{ width: '100%', height: '100%' }}
-                      frameBorder="0"
-                      allow="microphone"
-                      title="Dify Chatbot"
-                      className="absolute inset-0 w-full h-full z-10"
-                  />
+                  <div className="absolute top-[-20px] left-[20px] text-white opacity-40 z-0 pointer-events-none"><IconCloud className="w-32 h-32 fill-current" /></div>
+                  <iframe src="https://udify.app/chatbot/3GHTKiJAdShhHyUl" style={{ width: '100%', height: '100%' }} frameBorder="0" allow="microphone" title="Dify Chatbot" className="absolute inset-0 w-full h-full z-10" />
               </div>
             </main>
           </div>
         );
       };
 
-      // 4. Main App Component
+      // 4. Main App
       const App = () => {
         const [isAuthenticated, setIsAuthenticated] = useState(false);
         const [isLoading, setIsLoading] = useState(true);
 
         useEffect(() => {
           const storedAuth = sessionStorage.getItem(SESSION_KEY);
-          if (storedAuth === 'true') {
-            setIsAuthenticated(true);
-          }
+          if (storedAuth === 'true') setIsAuthenticated(true);
           setTimeout(() => setIsLoading(false), 800);
         }, []);
 
@@ -363,78 +252,30 @@
           <div className="relative h-screen w-screen overflow-hidden flex flex-col font-sans text-maiden-text bg-gradient-to-br from-blue-50 via-pink-50 to-white selection:bg-pink-200">
             <BackgroundParticles />
             <div className="relative z-10 w-full h-full flex flex-col">
-              {!isAuthenticated ? (
-                <Login onLogin={handleLogin} />
-              ) : (
-                <ChatInterface onLogout={handleLogout} />
-              )}
+              {!isAuthenticated ? <Login onLogin={handleLogin} /> : <ChatInterface onLogout={handleLogout} />}
             </div>
           </div>
         );
       };
 
-      // 5. Error Boundary (Functional Approach not standard for EB, sticking to Class for safety in standalone)
+      // 5. Error Boundary
       class ErrorBoundary extends React.Component {
         constructor(props) {
           super(props);
           this.state = { hasError: false, error: null };
         }
-
-        static getDerivedStateFromError(error) {
-          return { hasError: true, error };
-        }
-
-        componentDidCatch(error, errorInfo) {
-          console.error("ErrorBoundary caught an error", error, errorInfo);
-        }
-
+        static getDerivedStateFromError(error) { return { hasError: true, error }; }
+        componentDidCatch(error, errorInfo) { console.error("ErrorBoundary caught error", error, errorInfo); }
         render() {
           if (this.state.hasError) {
             return (
-              <div style={{
-                  height: '100vh',
-                  width: '100vw',
-                  backgroundColor: '#fff0f5',
-                  color: '#db7093',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontFamily: '"Quicksand", sans-serif',
-                  textAlign: 'center',
-                  padding: '2rem'
-              }}>
-                <h1 style={{fontSize: '3rem', marginBottom: '0.5rem'}}>qaq</h1>
-                <h2 style={{fontSize: '1.5rem', marginBottom: '2rem', color: '#ffb7b2'}}>画面加载失败啦</h2>
-                <div style={{
-                    backgroundColor: 'white',
-                    padding: '1.5rem',
-                    borderRadius: '1rem',
-                    maxWidth: '800px',
-                    textAlign: 'left',
-                    border: '2px dashed #ffb7b2',
-                    boxShadow: '0 4px 6px rgba(255, 182, 193, 0.3)'
-                }}>
-                  <pre style={{whiteSpace: 'pre-wrap', fontSize: '0.9rem', color: '#888'}}>
-                      {this.state.error?.toString()}
-                  </pre>
+              <div style={{height:'100vh',width:'100vw',backgroundColor:'#fff0f5',color:'#db7093',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',fontFamily:'"Quicksand", sans-serif',textAlign:'center',padding:'2rem'}}>
+                <h1 style={{fontSize:'3rem',marginBottom:'0.5rem'}}>qaq</h1>
+                <h2 style={{fontSize:'1.5rem',marginBottom:'2rem',color:'#ffb7b2'}}>画面加载失败啦</h2>
+                <div style={{backgroundColor:'white',padding:'1.5rem',borderRadius:'1rem',maxWidth:'800px',textAlign:'left',border:'2px dashed #ffb7b2',boxShadow:'0 4px 6px rgba(255, 182, 193, 0.3)'}}>
+                  <pre style={{whiteSpace:'pre-wrap',fontSize:'0.9rem',color:'#888'}}>{this.state.error?.toString()}</pre>
                 </div>
-                <button 
-                  onClick={() => window.location.reload()}
-                  style={{
-                      marginTop: '2rem',
-                      padding: '0.8rem 2rem',
-                      backgroundColor: '#ffb7b2',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '2rem',
-                      cursor: 'pointer',
-                      fontWeight: 'bold',
-                      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                  }}
-                >
-                  重新尝试 ✨
-                </button>
+                <button onClick={() => window.location.reload()} style={{marginTop:'2rem',padding:'0.8rem 2rem',backgroundColor:'#ffb7b2',color:'white',border:'none',borderRadius:'2rem',cursor:'pointer',fontWeight:'bold',boxShadow:'0 2px 4px rgba(0,0,0,0.1)'}}>重新尝试 ✨</button>
               </div>
             );
           }
@@ -442,15 +283,8 @@
         }
       }
 
-      // Initialize
       const root = ReactDOM.createRoot(document.getElementById('root'));
-      root.render(
-        <React.StrictMode>
-          <ErrorBoundary>
-            <App />
-          </ErrorBoundary>
-        </React.StrictMode>
-      );
+      root.render(<React.StrictMode><ErrorBoundary><App /></ErrorBoundary></React.StrictMode>);
     </script>
 </body>
 </html>

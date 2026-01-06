@@ -1,3 +1,2 @@
-// This project has been converted to a standalone HTML file for easy GitHub deployment.
-// Please check index.html for the source code.
-// You can safely delete this file.
+// All logic is now in index.html for easier GitHub Pages deployment.
+// This file is no longer used.
