@@ -3,41 +3,44 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>珮伊の专属 Gemini</title>
+    <title>珮伊の专属放映厅</title>
     
-    <!-- 1. Tailwind CSS (Styling) -->
-    <!-- Note: The warning about 'cdn.tailwindcss.com' in console is normal for this standalone version. -->
+    <!-- 1. Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              'maiden-pink': '#ffe4e6',    
-              'maiden-dark-pink': '#fda4af', 
-              'maiden-blue': '#e0f2fe',    
-              'maiden-text': '#885566',    
-              'maiden-white': '#fffbfc',   
+              'cinema-bg': '#09090b',      // Zinc 950 (Deep Black)
+              'cinema-card': 'rgba(24, 24, 27, 0.8)', // Zinc 900 + Opacity
+              'cinema-gold': '#fbbf24',    // Amber 400 (Golden accent)
+              'cinema-gold-dim': '#b45309', // Amber 700
+              'cinema-red': '#be123c',     // Rose 700 (Velvet Red)
+              'cinema-text': '#e4e4e7',    // Zinc 200
+              'cinema-silver': '#a1a1aa',  // Zinc 400
             },
             fontFamily: {
-              sans: ['"Noto Sans SC"', 'Quicksand', 'ui-sans-serif', 'system-ui', 'sans-serif'], 
-              cute: ['"Comic Sans MS"', '"Chalkboard SE"', 'sans-serif'], 
+              sans: ['"Noto Sans SC"', 'system-ui', 'sans-serif'], 
+              mono: ['"Courier New"', 'monospace'], // For script vibes
             },
             animation: {
-              'float': 'float 6s ease-in-out infinite',
-              'float-delayed': 'float 6s ease-in-out 3s infinite',
-              'bounce-slow': 'bounce 3s infinite',
-              'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
-              'pulse-soft': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'spotlight': 'spotlight 8s ease-in-out infinite alternate',
+              'fade-in': 'fadeIn 1s ease-out forwards',
+              'flicker': 'flicker 3s infinite',
             },
             keyframes: {
-              float: {
-                '0%, 100%': { transform: 'translateY(0)' },
-                '50%': { transform: 'translateY(-20px)' },
+              spotlight: {
+                '0%': { backgroundPosition: '0% 50%' },
+                '100%': { backgroundPosition: '100% 50%' },
               },
-              fadeInUp: {
-                '0%': { opacity: '0', transform: 'translateY(20px)' },
+              fadeIn: {
+                '0%': { opacity: '0', transform: 'translateY(10px)' },
                 '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              flicker: {
+                '0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100%': { opacity: '0.99' },
+                '20%, 21.999%, 63%, 63.999%, 65%, 69.999%': { opacity: '0.4' },
               }
             }
           },
@@ -48,27 +51,38 @@
     <!-- 2. Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
 
-    <!-- 3. React & Babel (Runtime) -->
+    <!-- 3. React & Babel -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
     <style>
-      ::-webkit-scrollbar { width: 8px; }
-      ::-webkit-scrollbar-track { background: #fff0f5; }
-      ::-webkit-scrollbar-thumb { background: #fda4af; border-radius: 4px; }
-      ::-webkit-scrollbar-thumb:hover { background: #f472b6; }
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: #09090b; }
+      ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 3px; }
+      ::-webkit-scrollbar-thumb:hover { background: #fbbf24; }
       
       body {
         margin: 0;
         overflow: hidden;
-        background-color: #fff0f5;
+        background-color: #09090b;
+        color: #e4e4e7;
       }
       
+      /* Film Grain Effect */
+      .film-grain {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        z-index: 5;
+        opacity: 0.4;
+      }
+
       .shake-animation {
-        animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
       }
       @keyframes shake {
         10%, 90% { transform: translate3d(-1px, 0, 0); }
@@ -80,11 +94,11 @@
 <script type="importmap">
 {
   "imports": {
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "react/": "https://esm.sh/react@^19.2.3/",
     "react": "https://esm.sh/react@^19.2.3",
     "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "vite": "https://esm.sh/vite@^7.3.0",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
+    "vite": "https://esm.sh/vite@^7.3.1"
   }
 }
 </script>
@@ -95,14 +109,13 @@
     <script type="text/babel">
       const { useState, useEffect } = React;
 
-      // --- SVG Icons (Inline for Stability) ---
-      const IconHeart = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>;
-      const IconSparkles = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M3 9h4"/></svg>;
-      const IconKey = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>;
-      const IconArrowRight = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>;
+      // --- Icons (Cinema Themed) ---
+      const IconClapperboard = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="18" height="14" x="3" y="7" rx="2" ry="2"/><path d="M7 15h.01"/><path d="M17 15h.01"/><path d="M3 21h18"/><path d="M20.4 7.5 13 3l-1.6 3.4L20 10l.4-2.5Z"/><path d="M8.6 4.6 3 8"/></svg>;
+      const IconFilm = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 3v18"/><path d="M3 7.5h4"/><path d="M3 12h18"/><path d="M3 16.5h4"/><path d="M17 3v18"/><path d="M17 7.5h4"/><path d="M17 16.5h4"/></svg>;
+      const IconTicket = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>;
+      const IconPlay = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="5 3 19 12 5 21 5 3"/></svg>;
       const IconLogOut = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>;
-      const IconCloud = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M17.5 19c0-3.037-2.463-5.5-5.5-5.5S6.5 15.963 6.5 19"/><path d="M17.5 19c2.485 0 4.5-2.015 4.5-4.5S19.985 10 17.5 10c-.156 0-.308.008-.458.022C16.487 6.44 13.57 4 10 4 6.134 4 3 7.134 3 11c0 .17.007.338.02.5C1.292 12.188 0 13.917 0 16c0 2.761 2.239 5 5 5h12.5"/></svg>;
-      const IconStars = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m12 3-1.9 5.8a2 2 0 0 1-1.2 1.3l-5.8 1.9 5.8 1.9a2 2 0 0 1 1.2 1.3l1.9 5.8 1.9-5.8a2 2 0 0 1 1.2-1.3l5.8-1.9-5.8-1.9a2 2 0 0 1-1.2-1.3Z"/></svg>;
+      const IconProjector = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M5 7 3 5"/><path d="M9 6V3"/><path d="M13 7l2-2"/><circle cx="9" cy="13" r="3"/><path d="M11.83 12H20a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2.73"/><path d="M3 17h2"/></svg>;
 
       // --- Constants ---
       const PASSWORD_KEY = 'peiyi2026';
@@ -111,19 +124,18 @@
       // --- Components ---
 
       // 1. Background
-      const BackgroundParticles = () => {
+      const BackgroundCinema = () => {
         return (
-          <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 bg-gradient-to-br from-[#f0f9ff] via-[#fff1f2] to-[#fdf4ff]">
-            <div className="absolute top-[10%] left-[10%] w-64 h-64 bg-pink-200/30 rounded-full blur-3xl animate-float-delayed"></div>
-            <div className="absolute bottom-[20%] right-[10%] w-80 h-80 bg-blue-200/30 rounded-full blur-3xl animate-float"></div>
-            <div className="absolute top-[40%] left-[50%] w-72 h-72 bg-purple-200/20 rounded-full blur-3xl animate-pulse-soft"></div>
-            <div className="absolute inset-0 opacity-[0.4]" style={{backgroundImage: `radial-gradient(#fda4af 1px, transparent 1px)`, backgroundSize: '30px 30px'}}></div>
-            <div className="absolute top-[15%] left-[5%] opacity-40 text-white animate-float" style={{ animationDuration: '8s' }}>
-               <IconCloud className="w-24 h-24 fill-white" />
-            </div>
-            <div className="absolute bottom-[25%] right-[5%] opacity-30 text-white animate-float-delayed" style={{ animationDuration: '10s' }}>
-               <IconCloud className="w-32 h-32 fill-white" />
-            </div>
+          <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 bg-cinema-bg">
+             {/* Spotlights */}
+             <div className="absolute -top-[20%] left-[20%] w-[40%] h-[100%] bg-gradient-to-b from-white/10 to-transparent transform -rotate-12 blur-3xl opacity-30"></div>
+             <div className="absolute -top-[20%] right-[20%] w-[40%] h-[100%] bg-gradient-to-b from-cinema-gold/10 to-transparent transform rotate-12 blur-3xl opacity-20"></div>
+             
+             {/* Film Grain */}
+             <div className="film-grain"></div>
+
+             {/* Ambient Glow */}
+             <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black to-transparent opacity-80"></div>
           </div>
         );
       };
@@ -150,42 +162,69 @@
         return (
           <div className="flex flex-col items-center justify-center h-full w-full px-4 font-sans relative z-20">
             <div className={`
-              relative w-full max-w-sm bg-white/70 backdrop-blur-md border-2 border-white rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(255,182,193,0.5)] p-8 
-              animate-fade-in-up transition-all duration-700 ease-in-out
-              ${isUnlocking ? 'scale-110 opacity-0 translate-y-[-50px] rotate-3' : 'opacity-100'}
+              relative w-full max-w-sm 
+              bg-cinema-card backdrop-blur-md 
+              border border-cinema-gold/30 
+              rounded-lg
+              shadow-[0_0_50px_-10px_rgba(251,191,36,0.1)] 
+              p-8 
+              animate-fade-in
+              transition-all duration-700 ease-in-out
+              ${isUnlocking ? 'scale-105 opacity-0 translate-y-[-20px]' : 'opacity-100'}
             `}>
-              <div className="absolute -top-8 -left-8 text-maiden-blue animate-float">
-                  <IconSparkles className="w-14 h-14 opacity-80 fill-blue-100" />
-              </div>
-              <div className="absolute -bottom-6 -right-6 text-maiden-dark-pink animate-float-delayed">
-                  <IconHeart className="w-12 h-12 opacity-80 fill-pink-200" />
-              </div>
-
-              <div className="text-center mb-8 relative">
-                  <div className="inline-block p-4 rounded-full bg-gradient-to-tr from-white to-pink-50 shadow-inner mb-4 ring-4 ring-white">
-                      <div className="bg-gradient-to-tr from-pink-300 to-rose-300 p-3 rounded-full shadow-lg text-white">
-                          <IconHeart className="w-8 h-8 animate-pulse-soft fill-current" />
-                      </div>
-                  </div>
-                  <h1 className="text-2xl font-bold text-maiden-text tracking-wider mb-2 font-cute">珮伊の专属 Gemini</h1>
-                  <p className="text-sm text-pink-300/80 font-medium tracking-widest uppercase">Magic Diary</p>
+              {/* Decorative Film Strip Top */}
+              <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-cinema-bg border border-cinema-silver/20 px-4 py-2 rounded shadow-lg flex items-center gap-2">
+                 <IconFilm className="w-5 h-5 text-cinema-gold" />
+                 <span className="text-xs tracking-widest text-cinema-silver uppercase">Admit One</span>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="text-center mb-10 mt-4">
+                  <h1 className="text-3xl font-bold text-cinema-text tracking-wide mb-2" style={{textShadow: '0 0 10px rgba(251,191,36,0.3)'}}>
+                      珮伊の专属放映厅
+                  </h1>
+                  <div className="h-[1px] w-24 bg-gradient-to-r from-transparent via-cinema-gold to-transparent mx-auto mb-2"></div>
+                  <p className="text-xs text-cinema-silver font-mono uppercase tracking-[0.2em]">
+                      Private Cinema · Gemini
+                  </p>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="relative group">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
-                          <IconKey className={`w-5 h-5 transition-colors duration-300 ${error ? 'text-red-400' : 'text-pink-300 group-focus-within:text-pink-500'}`} />
+                          <IconTicket className={`w-5 h-5 transition-colors duration-300 ${error ? 'text-cinema-red' : 'text-cinema-gold group-focus-within:text-white'}`} />
                       </div>
                       <input type="password" value={input} onChange={(e) => { setInput(e.target.value); setError(false); }}
-                          className={`w-full bg-white/90 border-2 rounded-2xl py-3.5 pl-12 pr-4 text-maiden-text placeholder-pink-200 outline-none transition-all duration-300 shadow-sm ${error ? 'border-red-200 bg-red-50/50 shake-animation' : 'border-pink-100 focus:border-pink-300 focus:ring-4 focus:ring-pink-100/50'}`}
-                          placeholder="请输入专属口令..." autoFocus />
+                          className={`
+                              w-full bg-black/50 border rounded px-4 py-3.5 pl-12
+                              text-cinema-text placeholder-gray-600
+                              outline-none transition-all duration-300 font-mono text-sm
+                              ${error 
+                                ? 'border-cinema-red shadow-[0_0_15px_-3px_rgba(220,38,38,0.5)] shake-animation' 
+                                : 'border-gray-800 focus:border-cinema-gold focus:shadow-[0_0_15px_-3px_rgba(251,191,36,0.3)]'}
+                          `}
+                          placeholder="请输入入场券号码..." autoFocus />
                   </div>
-                  {error && <div className="text-center text-xs text-red-400 font-bold animate-bounce">(qcq) 哎呀，口令不对哦~</div>}
-                  <button type="submit" disabled={!input} className={`w-full mt-2 bg-gradient-to-r from-pink-400 to-rose-400 text-white font-bold py-4 px-4 rounded-2xl shadow-lg shadow-pink-200 transform transition-all duration-300 flex items-center justify-center gap-2 border-b-4 border-pink-500/20 active:border-b-0 active:translate-y-1 ${!input ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:-translate-y-1 hover:shadow-xl cursor-pointer'}`}>
-                      <span>开启旅程</span><IconArrowRight className="w-5 h-5" />
+                  
+                  {error && <div className="text-center text-xs text-cinema-red font-mono font-bold animate-flicker">[ERROR] 票号无效 / INVALID TICKET</div>}
+                  
+                  <button type="submit" disabled={!input} className={`
+                      w-full mt-2 
+                      bg-gradient-to-r from-cinema-gold-dim to-cinema-gold
+                      text-black font-bold py-3.5 px-4 
+                      rounded
+                      shadow-lg transform transition-all duration-300 
+                      flex items-center justify-center gap-2
+                      hover:brightness-110
+                      ${!input ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:-translate-y-0.5 cursor-pointer'}
+                  `}>
+                      <span className="tracking-widest">检票入场</span>
+                      <IconPlay className="w-4 h-4 fill-black" />
                   </button>
               </form>
-              <div className="mt-8 text-center"><p className="text-[10px] text-pink-200">Design for Peiyi · 2026</p></div>
+              
+              <div className="mt-8 text-center opacity-40">
+                  <p className="text-[10px] text-cinema-silver font-mono">EST. 2026 · PEIYI PRODUCTION</p>
+              </div>
             </div>
           </div>
         );
@@ -195,19 +234,35 @@
       const ChatInterface = ({ onLogout }) => {
         return (
           <div className="flex flex-col h-full w-full bg-transparent relative z-20">
-            <header className="flex-none h-16 bg-white/60 backdrop-blur-md border-b border-white/50 flex items-center justify-between px-4 z-30 shadow-sm">
-              <div className="flex items-center gap-3">
-                  <div className="bg-pink-100 p-2 rounded-xl text-pink-500"><IconStars className="w-5 h-5 fill-current" /></div>
-                  <h1 className="text-lg font-cute font-bold text-maiden-text tracking-wide">珮伊の专属 Gemini</h1>
+            {/* Header */}
+            <header className="flex-none h-16 bg-black/80 backdrop-blur border-b border-white/10 flex items-center justify-between px-6 z-30 shadow-2xl">
+              <div className="flex items-center gap-4">
+                  <div className="bg-cinema-gold/10 p-2 rounded border border-cinema-gold/20">
+                      <IconClapperboard className="w-5 h-5 text-cinema-gold" />
+                  </div>
+                  <div className="flex flex-col">
+                      <h1 className="text-lg font-bold text-cinema-text tracking-wide">珮伊の专属放映厅</h1>
+                      <span className="text-[10px] text-cinema-gold/80 font-mono tracking-wider uppercase">Now Playing: Gemini</span>
+                  </div>
               </div>
-              <button onClick={onLogout} className="group flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-pink-100 shadow-sm hover:shadow-md hover:bg-pink-50 transition-all duration-300 text-sm font-medium text-pink-400 hover:text-pink-500">
-                  <span className="hidden sm:inline">悄悄离开</span><IconLogOut className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              <button onClick={onLogout} className="group flex items-center gap-2 px-4 py-1.5 rounded bg-white/5 border border-white/10 hover:bg-white/10 hover:border-cinema-red/50 transition-all duration-300">
+                  <span className="text-xs font-medium text-gray-400 group-hover:text-cinema-red transition-colors hidden sm:inline">离场 / EXIT</span>
+                  <IconLogOut className="w-4 h-4 text-gray-500 group-hover:text-cinema-red transition-colors" />
               </button>
             </header>
-            <main className="flex-1 relative overflow-hidden w-full flex flex-col p-2 sm:p-4">
-              <div className="flex-1 w-full h-full relative bg-white/40 backdrop-blur-sm rounded-3xl border-2 border-white shadow-xl overflow-hidden">
-                  <div className="absolute top-[-20px] left-[20px] text-white opacity-40 z-0 pointer-events-none"><IconCloud className="w-32 h-32 fill-current" /></div>
+            
+            {/* Main Screen Area */}
+            <main className="flex-1 relative overflow-hidden w-full flex flex-col p-4 sm:p-6">
+              {/* Screen Frame */}
+              <div className="flex-1 w-full h-full relative bg-black/40 backdrop-blur-sm rounded-lg border border-white/10 shadow-2xl overflow-hidden ring-1 ring-white/5">
+                  <div className="absolute top-[-20px] left-[20px] text-white opacity-[0.03] z-0 pointer-events-none rotate-12">
+                      <IconProjector className="w-48 h-48" />
+                  </div>
+                  {/* The Chatbot */}
                   <iframe src="https://udify.app/chatbot/3GHTKiJAdShhHyUl" style={{ width: '100%', height: '100%' }} frameBorder="0" allow="microphone" title="Dify Chatbot" className="absolute inset-0 w-full h-full z-10" />
+                  
+                  {/* Screen Glare Effect */}
+                  <div className="absolute top-0 right-0 w-full h-1/3 bg-gradient-to-b from-white/5 to-transparent pointer-events-none z-20"></div>
               </div>
             </main>
           </div>
@@ -222,7 +277,7 @@
         useEffect(() => {
           const storedAuth = sessionStorage.getItem(SESSION_KEY);
           if (storedAuth === 'true') setIsAuthenticated(true);
-          setTimeout(() => setIsLoading(false), 800);
+          setTimeout(() => setIsLoading(false), 1200); // Slightly longer intro for dramatic effect
         }, []);
 
         const handleLogin = (password) => {
@@ -241,16 +296,16 @@
 
         if (isLoading) {
           return (
-            <div className="h-screen w-screen bg-maiden-pink flex flex-col items-center justify-center text-maiden-text">
-              <IconHeart className="w-12 h-12 text-maiden-dark-pink animate-bounce mb-4 fill-current" />
-              <div className="font-cute text-xl animate-pulse">正在准备惊喜...</div>
+            <div className="h-screen w-screen bg-cinema-bg flex flex-col items-center justify-center text-cinema-text">
+              <IconProjector className="w-16 h-16 text-cinema-gold animate-pulse mb-6" />
+              <div className="font-mono text-xl tracking-[0.5em] animate-flicker">LOADING FILM...</div>
             </div>
           );
         }
 
         return (
-          <div className="relative h-screen w-screen overflow-hidden flex flex-col font-sans text-maiden-text bg-gradient-to-br from-blue-50 via-pink-50 to-white selection:bg-pink-200">
-            <BackgroundParticles />
+          <div className="relative h-screen w-screen overflow-hidden flex flex-col font-sans text-cinema-text selection:bg-cinema-gold selection:text-black">
+            <BackgroundCinema />
             <div className="relative z-10 w-full h-full flex flex-col">
               {!isAuthenticated ? <Login onLogin={handleLogin} /> : <ChatInterface onLogout={handleLogout} />}
             </div>
@@ -265,17 +320,15 @@
           this.state = { hasError: false, error: null };
         }
         static getDerivedStateFromError(error) { return { hasError: true, error }; }
-        componentDidCatch(error, errorInfo) { console.error("ErrorBoundary caught error", error, errorInfo); }
         render() {
           if (this.state.hasError) {
             return (
-              <div style={{height:'100vh',width:'100vw',backgroundColor:'#fff0f5',color:'#db7093',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',fontFamily:'"Quicksand", sans-serif',textAlign:'center',padding:'2rem'}}>
-                <h1 style={{fontSize:'3rem',marginBottom:'0.5rem'}}>qaq</h1>
-                <h2 style={{fontSize:'1.5rem',marginBottom:'2rem',color:'#ffb7b2'}}>画面加载失败啦</h2>
-                <div style={{backgroundColor:'white',padding:'1.5rem',borderRadius:'1rem',maxWidth:'800px',textAlign:'left',border:'2px dashed #ffb7b2',boxShadow:'0 4px 6px rgba(255, 182, 193, 0.3)'}}>
-                  <pre style={{whiteSpace:'pre-wrap',fontSize:'0.9rem',color:'#888'}}>{this.state.error?.toString()}</pre>
+              <div style={{height:'100vh',width:'100vw',backgroundColor:'#09090b',color:'#e4e4e7',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',fontFamily:'monospace'}}>
+                <h1 style={{fontSize:'3rem',marginBottom:'1rem',color:'#dc2626'}}>TECHNICAL DIFFICULTIES</h1>
+                <div style={{border:'1px solid #dc2626', padding:'2rem', color:'#dc2626'}}>
+                   PLEASE STAND BY...
                 </div>
-                <button onClick={() => window.location.reload()} style={{marginTop:'2rem',padding:'0.8rem 2rem',backgroundColor:'#ffb7b2',color:'white',border:'none',borderRadius:'2rem',cursor:'pointer',fontWeight:'bold',boxShadow:'0 2px 4px rgba(0,0,0,0.1)'}}>重新尝试 ✨</button>
+                <button onClick={() => window.location.reload()} style={{marginTop:'2rem',padding:'0.5rem 2rem',background:'transparent',border:'1px solid white',color:'white',cursor:'pointer'}}>RELOAD REEL</button>
               </div>
             );
           }
